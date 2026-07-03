@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.blueprint-bg {
+  background-color: #0F3A5F;
+  background-image:
+    linear-gradient(rgba(220, 235, 245, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220, 235, 245, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.title-block {
+  border: 1.5px solid theme('colors.blueprint.800');
+}
+
+.title-block label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: theme('colors.blueprint.600');
+}
+
+/* Visible keyboard focus ring everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid theme('colors.amber');
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
