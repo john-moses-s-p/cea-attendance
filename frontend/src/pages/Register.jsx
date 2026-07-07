@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import client from '../api/client'
+import Logos from '../components/ui/Logos'
+import { Button } from '../components/ui/primitives'
+import PageTransition from '../components/ui/PageTransition'
+
+const inputClass =
+  'w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none'
+const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-400'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -24,76 +31,66 @@ export default function Register() {
 
   if (status.devToken) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-paper p-8">
-        <div className="title-block max-w-sm rounded-sm bg-white p-8 text-center shadow-sm">
-          <h2 className="font-display text-xl font-bold text-blueprint-900">Check your email</h2>
-          <p className="mt-2 text-sm text-graphite/70">
-            We've sent a verification link to <strong>{form.email}</strong>. Verify your
+      <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+        <PageTransition className="glass-card w-full max-w-sm rounded-3xl p-8 text-center shadow-glow-sm">
+          <h2 className="font-display text-xl font-bold text-slate-100">Check your email</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            We've sent a verification link to <strong className="text-slate-200">{form.email}</strong>. Verify your
             account, then sign in.
           </p>
-          <button
-            onClick={() => navigate(`/verify-email?token=${status.devToken}`)}
-            className="mt-5 w-full rounded bg-blueprint-800 px-4 py-2.5 text-sm font-semibold text-paper hover:bg-blueprint-700"
-          >
+          <Button onClick={() => navigate(`/verify-email?token=${status.devToken}`)} className="mt-5 w-full">
             Continue to verify (dev mode)
-          </button>
-        </div>
+          </Button>
+        </PageTransition>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper p-8">
-      <div className="w-full max-w-sm">
-        <div className="title-block rounded-sm bg-white p-8 shadow-sm">
-          <h2 className="font-display text-2xl font-bold text-blueprint-900">Create your account</h2>
-          <p className="mt-1 text-sm text-graphite/70">Students only — use your institutional email.</p>
+    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+      <PageTransition className="w-full max-w-sm">
+        <Logos layout="center" size={48} />
+        <div className="glass-card mt-6 rounded-3xl p-6 shadow-glow-sm sm:p-8">
+          <h2 className="font-display text-xl font-bold text-slate-100">Create your account</h2>
+          <p className="mt-1 text-sm text-slate-400">Students only — use your institutional email.</p>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="mb-1 block text-xs font-mono uppercase tracking-wide text-blueprint-600">Full name</label>
-              <input required value={form.name} onChange={update('name')}
-                className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none" />
+              <label className={labelClass}>Full name</label>
+              <input required value={form.name} onChange={update('name')} className={inputClass} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-mono uppercase tracking-wide text-blueprint-600">Institutional email</label>
+              <label className={labelClass}>Institutional email</label>
               <input required type="email" value={form.email} onChange={update('email')}
-                placeholder="you@student.tce.edu"
-                className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="mb-1 block text-xs font-mono uppercase tracking-wide text-blueprint-600">Register no.</label>
-                <input value={form.register_number} onChange={update('register_number')}
-                  className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none" />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-mono uppercase tracking-wide text-blueprint-600">Department</label>
-                <input value={form.department} onChange={update('department')}
-                  className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none" />
-              </div>
+                placeholder="you@student.tce.edu" className={inputClass} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-mono uppercase tracking-wide text-blueprint-600">Password</label>
-              <input required type="password" minLength={8} value={form.password} onChange={update('password')}
-                className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none" />
+              <label className={labelClass}>Register number</label>
+              <input value={form.register_number} onChange={update('register_number')} className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Department</label>
+              <input value={form.department} onChange={update('department')} className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Password</label>
+              <input required type="password" minLength={8} value={form.password} onChange={update('password')} className={inputClass} />
             </div>
 
             {status.error && (
-              <p className="rounded bg-signal-absent/10 px-3 py-2 text-sm text-signal-absent">{status.error}</p>
+              <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{status.error}</p>
             )}
 
-            <button type="submit" disabled={status.loading}
-              className="w-full rounded bg-blueprint-800 px-4 py-2.5 text-sm font-semibold text-paper hover:bg-blueprint-700 disabled:opacity-60">
+            <Button type="submit" disabled={status.loading} className="w-full py-3.5 text-base">
               {status.loading ? 'Creating account…' : 'Create account'}
-            </button>
+            </Button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-blueprint-600">
+          <p className="mt-5 text-center text-xs text-accent">
             Already have an account? <Link to="/login" className="hover:underline">Sign in</Link>
           </p>
         </div>
-      </div>
+      </PageTransition>
     </div>
   )
 }

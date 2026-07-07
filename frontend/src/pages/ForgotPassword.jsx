@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import client from '../api/client'
+import Logos from '../components/ui/Logos'
+import { Button } from '../components/ui/primitives'
+import PageTransition from '../components/ui/PageTransition'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
@@ -15,50 +18,47 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper p-8">
-      <div className="title-block w-full max-w-sm rounded-sm bg-white p-8 shadow-sm">
-        <h2 className="font-display text-2xl font-bold text-blueprint-900">Reset your password</h2>
-        <p className="mt-1 text-sm text-graphite/70">
-          Enter your institutional email and we'll send a reset link.
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+      <PageTransition className="w-full max-w-sm">
+        <Logos layout="center" size={48} />
+        <div className="glass-card mt-6 rounded-3xl p-6 shadow-glow-sm sm:p-8">
+          <h2 className="font-display text-xl font-bold text-slate-100">Reset your password</h2>
+          <p className="mt-1 text-sm text-slate-400">
+            Enter your institutional email and we'll send a reset link.
+          </p>
 
-        {sent ? (
-          <div className="mt-6 space-y-4">
-            <p className="rounded bg-signal-present/10 px-3 py-2 text-sm text-signal-present">
-              If that account exists, a reset link has been sent.
-            </p>
-            {devToken && (
-              <Link
-                to={`/reset-password?token=${devToken}`}
-                className="block w-full rounded bg-blueprint-800 px-4 py-2.5 text-center text-sm font-semibold text-paper hover:bg-blueprint-700"
-              >
-                Continue to reset (dev mode)
-              </Link>
-            )}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@student.tce.edu"
-              className="w-full rounded border border-blueprint-400/40 px-3 py-2 text-sm focus:border-blueprint-600 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="w-full rounded bg-blueprint-800 px-4 py-2.5 text-sm font-semibold text-paper hover:bg-blueprint-700"
-            >
-              Send reset link
-            </button>
-          </form>
-        )}
+          {sent ? (
+            <div className="mt-6 space-y-4">
+              <p className="rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+                If that account exists, a reset link has been sent.
+              </p>
+              {devToken && (
+                <Button as={Link} to={`/reset-password?token=${devToken}`} className="w-full">
+                  Continue to reset (dev mode)
+                </Button>
+              )}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@student.tce.edu"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+              />
+              <Button type="submit" className="w-full py-3.5 text-base">
+                Send reset link
+              </Button>
+            </form>
+          )}
 
-        <p className="mt-5 text-center text-xs text-blueprint-600">
-          <Link to="/login" className="hover:underline">Back to sign in</Link>
-        </p>
-      </div>
+          <p className="mt-5 text-center text-xs text-accent">
+            <Link to="/login" className="hover:underline">Back to sign in</Link>
+          </p>
+        </div>
+      </PageTransition>
     </div>
   )
 }

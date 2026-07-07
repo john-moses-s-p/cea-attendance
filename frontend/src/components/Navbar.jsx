@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { CeaLogo, TceLogo } from './ui/Logos'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -13,11 +14,12 @@ export default function Navbar() {
     ? [
         { to: '/admin', label: 'Dashboard' },
         { to: '/admin/meetings', label: 'Meetings' },
-        { to: '/admin/analytics', label: 'Attendance Analytics' },
+        { to: '/admin/analytics', label: 'Attendance' },
       ]
     : [
         { to: '/student', label: 'Dashboard' },
         { to: '/student/meetings', label: 'Meetings' },
+        { to: '/student/attendance', label: 'Attendance' },
       ]
 
   const handleLogout = () => {
@@ -26,44 +28,42 @@ export default function Navbar() {
   }
 
   return (
-    <header className="border-b border-blueprint-800 bg-blueprint-900 text-paper">
+    // Requirement 3: no top nav on mobile — bottom nav takes over there.
+    <header className="sticky top-0 z-40 hidden border-b border-white/5 bg-navy/80 backdrop-blur-lg md:block">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-8">
-          <div className="flex items-baseline gap-2 font-display">
-            <span className="text-lg font-bold tracking-tight">CEA</span>
-            <span className="hidden text-xs font-mono uppercase tracking-widest text-blueprint-400 sm:inline">
-              Meeting &amp; Member Portal
-            </span>
-          </div>
-          <nav className="flex gap-1">
-            {links.map((link) => {
-              const active = location.pathname === link.to
-              return (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                    active
-                      ? 'bg-blueprint-700 text-paper'
-                      : 'text-blueprint-100 hover:bg-blueprint-800'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
+        <Link to={isAdmin ? '/admin' : '/student'} className="flex items-center gap-3">
+          <CeaLogo size={36} />
+          <span className="font-display text-lg font-bold tracking-tight text-slate-100">CEA</span>
+        </Link>
+
+        <nav className="flex gap-1 rounded-full bg-white/5 p-1">
+          {links.map((link) => {
+            const active = location.pathname === link.to
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`glow-btn rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                  active ? 'bg-accent text-navy shadow-glow-sm' : 'text-slate-300 hover:bg-white/10'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
+        </nav>
+
         <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-sm font-medium leading-tight">{user.name}</p>
-            <p className="font-mono text-[11px] uppercase tracking-wide text-blueprint-400 leading-tight">
+          <Link to="/profile" className="text-right hover:opacity-80">
+            <p className="text-sm font-medium leading-tight text-slate-100">{user.name}</p>
+            <p className="font-mono text-[11px] uppercase tracking-wide leading-tight text-accent/80">
               {user.role.replace('_', ' ')}
             </p>
-          </div>
+          </Link>
+          <TceLogo size={36} />
           <button
             onClick={handleLogout}
-            className="rounded border border-blueprint-600 px-3 py-1.5 text-sm font-medium text-blueprint-100 hover:bg-blueprint-800"
+            className="glow-btn rounded-full border border-white/10 px-3 py-1.5 text-sm font-medium text-slate-300 hover:bg-white/5"
           >
             Log out
           </button>

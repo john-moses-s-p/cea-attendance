@@ -81,6 +81,16 @@ VITE_API_URL=https://your-backend.onrender.com
 The frontend already reads this via `import.meta.env.VITE_API_URL` in
 `src/api/client.js` — no code changes needed.
 
+## Logo files (this update)
+
+The redesigned frontend references `/cea-tce.jpg` and `/tce-logo.webp`,
+served from `frontend/public/`. **Placeholder badge images are included**
+so the app renders correctly out of the box — replace
+`frontend/public/cea-tce.jpg` and `frontend/public/tce-logo.webp` with your
+actual CEA and TCE logo artwork before going live (same filenames, any
+reasonable image size — square works best since they're rendered as
+circular badges).
+
 ## After both are live
 
 1. Confirm `FRONTEND_ORIGIN` on Render exactly matches your Vercel URL

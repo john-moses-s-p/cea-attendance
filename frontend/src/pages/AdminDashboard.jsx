@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import client from '../api/client'
 import Navbar from '../components/Navbar'
+import BottomNav from '../components/BottomNav'
+import PageTransition from '../components/ui/PageTransition'
+import { Card, Button, MeetingStatusBadge } from '../components/ui/primitives'
+import Logos from '../components/ui/Logos'
+import { useAuth } from '../context/AuthContext'
 
 function formatMeetingWhen(m) {
   if (!m.meeting_date) return '—'
@@ -12,6 +17,7 @@ function formatMeetingWhen(m) {
 }
 
 export default function AdminDashboard() {
+  const { user } = useAuth()
   const [meetings, setMeetings] = useState([])
   const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -40,60 +46,68 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
       <Navbar />
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-blueprint-600">Overview</p>
-            <h1 className="font-display text-2xl font-bold text-blueprint-900">Admin dashboard</h1>
+      <PageTransition>
+        <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+          {/* Welcome banner (Requirement 7: logos in welcome section) */}
+          <Card className="flex items-center justify-between gap-3" glow>
+            <div>
+              <p className="font-mono text-xs uppercase tracking-widest text-accent">Overview</p>
+              <h1 className="font-display text-xl font-bold text-slate-100 sm:text-2xl">{user.name}</h1>
+            </div>
+            <Logos layout="welcome" size={36} />
+          </Card>
+
+          <div className="mt-4 flex justify-end">
+            <Button as={Link} to="/admin/meetings">+ New meeting</Button>
           </div>
-          <Link
-            to="/admin/meetings"
-            className="rounded bg-blueprint-800 px-4 py-2.5 text-sm font-semibold text-paper hover:bg-blueprint-700"
-          >
-            + New meeting
-          </Link>
-        </div>
 
-        {loading ? (
-          <p className="text-sm text-graphite/60">Loading…</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-              {stats.map((s) => (
-                <div key={s.label} className="title-block rounded-sm bg-white p-3 sm:p-4">
-                  <p className="font-mono text-2xl font-semibold text-blueprint-900 sm:text-3xl">{s.value}</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-wide text-graphite/60 sm:text-xs">{s.label}</p>
-                </div>
-              ))}
-            </div>
+          {loading ? (
+            <p className="mt-6 text-sm text-slate-400">Loading…</p>
+          ) : (
+            <>
+              {/* Statistics cards (Requirement 9) */}
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                {stats.map((s, i) => (
+                  <Card key={s.label} className="text-center animate-fade-in-up" style={{ animationDelay: `${i * 40}ms` }}>
+                    <p className="font-mono text-2xl font-bold text-accent sm:text-3xl">{s.value}</p>
+                    <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">{s.label}</p>
+                  </Card>
+                ))}
+              </div>
 
-            <div className="mt-8">
-              <h2 className="mb-3 font-display text-lg font-bold text-blueprint-900">Upcoming meetings</h2>
-              {upcoming.length === 0 ? (
-                <p className="text-sm text-graphite/60">No meetings scheduled yet. Create one to get started.</p>
-              ) : (
-                <div className="space-y-2">
-                  {upcoming.slice(0, 5).map((m) => (
-                    <Link
-                      key={m.id}
-                      to={`/admin/meetings/${m.id}`}
-                      className="flex flex-col gap-1 rounded border border-blueprint-400/30 bg-white px-4 py-3.5 hover:border-blueprint-600 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div>
-                        <p className="font-medium text-blueprint-900">{m.title}</p>
-                        <p className="text-xs text-graphite/60">{m.venue || 'Venue TBD'}</p>
-                      </div>
-                      <p className="font-mono text-xs text-blueprint-600">{formatMeetingWhen(m)}</p>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </main>
+              {/* Upcoming meetings card */}
+              <Card className="mt-6">
+                <h2 className="mb-3 font-display text-lg font-bold text-slate-100">Upcoming meetings</h2>
+                {upcoming.length === 0 ? (
+                  <p className="text-sm text-slate-400">No meetings scheduled yet. Create one to get started.</p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {upcoming.slice(0, 5).map((m) => (
+                      <Link
+                        key={m.id}
+                        to={`/admin/meetings/${m.id}`}
+                        className="tap-scale flex flex-col gap-1 rounded-2xl border border-white/5 bg-white/5 px-4 py-3.5 hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div>
+                          <p className="font-medium text-slate-100">{m.title}</p>
+                          <p className="text-xs text-slate-400">{m.venue || 'Venue TBD'}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-mono text-xs text-accent/80">{formatMeetingWhen(m)}</p>
+                          <MeetingStatusBadge status={m.status} />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </>
+          )}
+        </main>
+      </PageTransition>
+      <BottomNav />
     </div>
   )
 }

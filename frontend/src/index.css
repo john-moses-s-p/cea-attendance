@@ -4,26 +4,45 @@
 
 body {
   -webkit-font-smoothing: antialiased;
+  background-color: #0F172A;
+  color: #E2E8F0;
 }
 
-.blueprint-bg {
-  background-color: #0F3A5F;
-  background-image:
-    linear-gradient(rgba(220, 235, 245, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(220, 235, 245, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* --- Glassmorphism primitives ------------------------------------------ */
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
+.glass-card-solid {
+  background: #1E293B;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.glow-btn {
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.glow-btn:hover {
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.4);
+}
+.glow-btn:active {
+  transform: scale(0.96);
+}
+
+.tap-scale {
+  transition: transform 0.12s ease;
+}
+.tap-scale:active {
+  transform: scale(0.95);
+}
+
+/* Legacy print/title-block styling — still used by generated-agenda-style
+   read-only displays; harmless to keep alongside the dark theme. */
 .title-block {
-  border: 1.5px solid theme('colors.blueprint.800');
-}
-
-.title-block label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: theme('colors.blueprint.600');
+  border: 1.5px solid rgba(56, 189, 248, 0.25);
 }
 
 /* Visible keyboard focus ring everywhere */
@@ -32,8 +51,30 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid theme('colors.amber');
+  outline: 2px solid #38BDF8;
   outline-offset: 2px;
+}
+
+/* Simple page-enter transition, applied via <PageTransition> */
+.page-transition {
+  animation: page-fade-in 0.28s ease-out both;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom scrollbar for dark theme (webkit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.25);
+  border-radius: 9999px;
 }
 
 @media (prefers-reduced-motion: reduce) {

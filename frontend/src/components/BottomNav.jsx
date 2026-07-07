@@ -1,19 +1,24 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const ICONS = {
-  home: (
-    <path d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
-  ),
+  home: <path d="M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />,
   meetings: (
     <>
       <rect x="4" y="5" width="16" height="15" rx="2" />
       <path d="M8 3v4M16 3v4M4 10h16" />
     </>
   ),
-  code: (
+  attendance: (
     <>
-      <rect x="4" y="7" width="16" height="12" rx="2" />
-      <path d="M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M4 7l8-4 8 4" />
+      <path d="M9 12.5 11 14.5 15 10" />
+      <circle cx="12" cy="12" r="9" />
+    </>
+  ),
+  profile: (
+    <>
+      <circle cx="12" cy="8" r="3.2" />
+      <path d="M5 20c0-3.6 3.1-6.5 7-6.5s7 2.9 7 6.5" />
     </>
   ),
 }
@@ -28,21 +33,34 @@ function Icon({ name }) {
 }
 
 /**
- * Mobile-only bottom navigation bar for students (Feature 5). Hidden at the
- * md breakpoint and above, where the top Navbar's links are already visible.
- * Rendered by student-facing pages alongside <Navbar />.
+ * Mobile-only bottom navigation (Requirement 3). Replaces the top Navbar
+ * below the md breakpoint, for both admins and students — each role's
+ * "Attendance" tab points at the view that's relevant to them.
  */
 export default function BottomNav() {
+  const { user } = useAuth()
   const location = useLocation()
+  if (!user) return null
 
-  const items = [
-    { to: '/student', label: 'Dashboard', icon: 'home' },
-    { to: '/student/meetings', label: 'Meetings', icon: 'meetings' },
-  ]
+  const isAdmin = user.role === 'admin' || user.role === 'super_admin'
+
+  const items = isAdmin
+    ? [
+        { to: '/admin', label: 'Dashboard', icon: 'home' },
+        { to: '/admin/meetings', label: 'Meetings', icon: 'meetings' },
+        { to: '/admin/analytics', label: 'Attendance', icon: 'attendance' },
+        { to: '/profile', label: 'Profile', icon: 'profile' },
+      ]
+    : [
+        { to: '/student', label: 'Dashboard', icon: 'home' },
+        { to: '/student/meetings', label: 'Meetings', icon: 'meetings' },
+        { to: '/student/attendance', label: 'Attendance', icon: 'attendance' },
+        { to: '/profile', label: 'Profile', icon: 'profile' },
+      ]
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-blueprint-800 bg-blueprint-900 pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-navy-card/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
       aria-label="Primary"
     >
       <div className="mx-auto flex max-w-6xl">
@@ -52,12 +70,14 @@ export default function BottomNav() {
             <Link
               key={item.to}
               to={item.to}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors ${
-                active ? 'text-paper' : 'text-blueprint-400'
-              }`}
+              className="tap-scale flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium"
             >
-              <Icon name={item.icon} />
-              {item.label}
+              <span className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+                active ? 'bg-accent/20 text-accent shadow-glow-sm' : 'text-slate-400'
+              }`}>
+                <Icon name={item.icon} />
+              </span>
+              <span className={active ? 'text-accent' : 'text-slate-400'}>{item.label}</span>
             </Link>
           )
         })}

@@ -12,6 +12,8 @@ import StudentDashboard from './pages/StudentDashboard'
 import Meetings from './pages/Meetings'
 import MeetingDetail from './pages/MeetingDetail'
 import AttendanceAnalytics from './pages/AttendanceAnalytics'
+import StudentAttendance from './pages/StudentAttendance'
+import Profile from './pages/Profile'
 
 export default function App() {
   const { user } = useAuth()
@@ -79,6 +81,23 @@ export default function App() {
         element={
           <ProtectedRoute allowedRoles={['student']}>
             <MeetingDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/attendance"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentAttendance />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute allowedRoles={['admin', 'super_admin', 'student']}>
+            <Profile />
           </ProtectedRoute>
         }
       />
