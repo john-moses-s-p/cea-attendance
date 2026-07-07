@@ -32,9 +32,6 @@ FRONTEND_ORIGIN=https://your-vercel-domain.vercel.app
 
 INSTITUTIONAL_EMAIL_DOMAIN=student.tce.edu
 ADMIN_EMAIL_DOMAINS=student.tce.edu
-
-QR_WINDOW_BEFORE_MINUTES=15
-QR_WINDOW_AFTER_MINUTES=180
 ```
 
 Generate strong secrets locally, don't reuse the placeholders above, e.g.:
@@ -42,9 +39,28 @@ Generate strong secrets locally, don't reuse the placeholders above, e.g.:
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-The database itself is untouched — point `DB_*` at your existing MySQL instance;
-no migration is needed for the analytics feature (it only reads `users`,
-`meetings`, `attendance`).
+## Database migration (this update)
+
+This update **removes the QR attendance system** and replaces it with a
+6-digit meeting attendance code, adds `meeting_date` / `start_time` /
+`end_time` in place of the old single `meeting_datetime`, and adds a new
+`agenda_sections` table for the dynamic agenda builder.
+
+**Back up your database first.** Then, against an **existing** database:
+
+```bash
+mysql -u <user> -p cea_db < backend/migrations/003_meeting_code_agenda_remove_qr.sql
+```
+
+This backfills `meeting_date` / `start_time` / `end_time` from the old
+`meeting_datetime` column (assuming a 2-hour duration for past meetings —
+adjust manually if needed), converts any existing QR-marked attendance
+records to `marked_via = 'code'`, creates `agenda_sections`, and drops the
+now-unused `qr_sessions` / `qr_scan_logs` tables and `meeting_datetime`
+column.
+
+For a **fresh install**, just run `backend/schema.sql` — it already reflects
+the final post-migration schema, no need to also run the migration file.
 
 If your MySQL is managed by Render/PlanetScale/etc. and gives you a single
 connection string instead, set `DATABASE_URL` directly (it overrides the
@@ -75,3 +91,11 @@ The frontend already reads this via `import.meta.env.VITE_API_URL` in
    "Export to Excel" downloads a `.xlsx` file.
 4. Log in as a student and confirm `/admin/analytics` redirects away
    (role-restricted).
+5. As an admin, create a meeting (date + start/end time), add a couple of
+   agenda sections, generate an attendance code, and confirm:
+   - "Generate meeting agenda PDF" downloads a matching PDF.
+   - "Download attendance Excel" / "Download attendance PDF" both work.
+6. As a student, confirm the meeting shows a code-entry box during the
+   meeting's time window, and that entering the code marks you present.
+7. On a phone (or narrow browser window), confirm the student dashboard
+   shows a bottom navigation bar and there's no horizontal scrolling.

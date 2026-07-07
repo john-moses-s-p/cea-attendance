@@ -39,18 +39,3 @@ class Config:
     # --- File uploads (agenda / minutes PDFs) ---
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(os.getcwd(), "uploads"))
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MB
-
-    # --- QR attendance ---
-    # How long a generated QR code stays valid, by default / at most.
-    QR_DEFAULT_EXPIRY_MINUTES = int(os.getenv("QR_DEFAULT_EXPIRY_MINUTES", 10))
-    QR_MAX_EXPIRY_MINUTES = int(os.getenv("QR_MAX_EXPIRY_MINUTES", 60))
-
-    # A QR code may only be generated or scanned within this window around
-    # the meeting's scheduled start time (minutes before / after).
-    QR_WINDOW_BEFORE_MINUTES = int(os.getenv("QR_WINDOW_BEFORE_MINUTES", 15))
-    QR_WINDOW_AFTER_MINUTES = int(os.getenv("QR_WINDOW_AFTER_MINUTES", 180))
-
-    # Simple per-student scan rate limit (attempts / seconds) to blunt
-    # brute-force or scripted scan attempts.
-    QR_SCAN_RATE_LIMIT_ATTEMPTS = int(os.getenv("QR_SCAN_RATE_LIMIT_ATTEMPTS", 5))
-    QR_SCAN_RATE_LIMIT_WINDOW_SECONDS = int(os.getenv("QR_SCAN_RATE_LIMIT_WINDOW_SECONDS", 60))

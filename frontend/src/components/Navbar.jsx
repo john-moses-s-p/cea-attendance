@@ -18,7 +18,6 @@ export default function Navbar() {
     : [
         { to: '/student', label: 'Dashboard' },
         { to: '/student/meetings', label: 'Meetings' },
-        { to: '/student/scan', label: 'Scan attendance' },
       ]
 
   const handleLogout = () => {

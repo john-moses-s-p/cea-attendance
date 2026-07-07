@@ -11,7 +11,6 @@ import AdminDashboard from './pages/AdminDashboard'
 import StudentDashboard from './pages/StudentDashboard'
 import Meetings from './pages/Meetings'
 import MeetingDetail from './pages/MeetingDetail'
-import ScanAttendance from './pages/ScanAttendance'
 import AttendanceAnalytics from './pages/AttendanceAnalytics'
 
 export default function App() {
@@ -80,14 +79,6 @@ export default function App() {
         element={
           <ProtectedRoute allowedRoles={['student']}>
             <MeetingDetail />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/scan"
-        element={
-          <ProtectedRoute allowedRoles={['student']}>
-            <ScanAttendance />
           </ProtectedRoute>
         }
       />

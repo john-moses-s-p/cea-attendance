@@ -1,4 +1,6 @@
 from functools import wraps
+import secrets
+
 from flask import jsonify, current_app
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 
@@ -32,3 +34,14 @@ def get_client_ip(request):
     if forwarded:
         return forwarded.split(",")[0].strip()
     return request.remote_addr or "unknown"
+
+
+def generate_unique_attendance_code(model_cls, max_attempts=25):
+    """Generate a 6-digit numeric code (e.g. '483921') not currently used by
+    any other meeting. Zero-padded so it's always exactly 6 digits.
+    """
+    for _ in range(max_attempts):
+        candidate = f"{secrets.randbelow(1_000_000):06d}"
+        if not model_cls.query.filter_by(attendance_code=candidate).first():
+            return candidate
+    raise RuntimeError("Could not generate a unique attendance code; please retry.")

@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from extensions import db, bcrypt
 
 
@@ -67,7 +67,14 @@ class Meeting(db.Model):
     description = db.Column(db.Text, nullable=True)
     agenda = db.Column(db.Text, nullable=True)
     venue = db.Column(db.String(200), nullable=True)
-    meeting_datetime = db.Column(db.DateTime, nullable=False)
+
+    # Date/time (Feature 2). meeting_date is the calendar date; start_time /
+    # end_time are wall-clock times on that date. Kept as separate columns
+    # (rather than a single datetime) so the UI can show/edit them
+    # independently and so attendance-code validity has a clear end bound.
+    meeting_date = db.Column(db.Date, nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
 
     status = db.Column(
         db.Enum("scheduled", "completed", "cancelled", name="meeting_status"),
@@ -79,6 +86,10 @@ class Meeting(db.Model):
 
     attendance_locked = db.Column(db.Boolean, default=False, nullable=False)
 
+    # Meeting attendance code system (Feature 1, replaces QR).
+    attendance_code = db.Column(db.String(6), unique=True, nullable=True, index=True)
+    code_generated_at = db.Column(db.DateTime, nullable=True)
+
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=_utcnow)
     updated_at = db.Column(db.DateTime, default=_utcnow, onupdate=_utcnow)
@@ -87,23 +98,66 @@ class Meeting(db.Model):
         "Attendance", backref="meeting", lazy="dynamic",
         cascade="all, delete-orphan"
     )
+    agenda_sections = db.relationship(
+        "AgendaSection", backref="meeting", lazy="dynamic",
+        cascade="all, delete-orphan", order_by="AgendaSection.order_index"
+    )
     creator = db.relationship("User", foreign_keys=[created_by])
 
-    def to_dict(self, include_attendance_summary=False):
+    @property
+    def start_datetime(self):
+        """Naive datetime combining meeting_date + start_time (same
+        convention the app has always used — no timezone conversion)."""
+        if not self.meeting_date or not self.start_time:
+            return None
+        return datetime.combine(self.meeting_date, self.start_time)
+
+    @property
+    def end_datetime(self):
+        if not self.meeting_date or not self.end_time:
+            return None
+        end_dt = datetime.combine(self.meeting_date, self.end_time)
+        # Handle a meeting that runs past midnight (end_time < start_time).
+        if self.start_time and self.end_time < self.start_time:
+            end_dt += timedelta(days=1)
+        return end_dt
+
+    def is_code_valid(self, now=None):
+        """The attendance code is valid from the meeting's start time until
+        its end time, as long as the meeting hasn't been cancelled or
+        attendance hasn't been locked."""
+        if not self.attendance_code:
+            return False
+        if self.status == "cancelled" or self.attendance_locked:
+            return False
+        now = now or datetime.now()
+        start, end = self.start_datetime, self.end_datetime
+        if not start or not end:
+            return False
+        return start <= now <= end
+
+    def to_dict(self, include_attendance_summary=False, include_agenda_sections=False):
         data = {
             "id": self.id,
             "title": self.title,
             "description": self.description,
             "agenda": self.agenda,
             "venue": self.venue,
-            "meeting_datetime": self.meeting_datetime.isoformat(),
+            "meeting_date": self.meeting_date.isoformat() if self.meeting_date else None,
+            "start_time": self.start_time.strftime("%H:%M") if self.start_time else None,
+            "end_time": self.end_time.strftime("%H:%M") if self.end_time else None,
             "status": self.status,
             "agenda_pdf_path": self.agenda_pdf_path,
             "minutes_pdf_path": self.minutes_pdf_path,
             "attendance_locked": self.attendance_locked,
+            "has_attendance_code": bool(self.attendance_code),
+            "code_generated_at": self.code_generated_at.isoformat() if self.code_generated_at else None,
+            "code_valid": self.is_code_valid(),
             "created_by": self.created_by,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
+        if include_agenda_sections:
+            data["agenda_sections"] = [s.to_dict() for s in self.agenda_sections.all()]
         if include_attendance_summary:
             records = self.attendance_records.all()
             total = len(records)
@@ -114,6 +168,31 @@ class Meeting(db.Model):
                 "percentage": round((present / total) * 100, 1) if total else None,
             }
         return data
+
+
+class AgendaSection(db.Model):
+    """A single admin-defined agenda section (Feature 4). Sections are
+    fully dynamic — title + a list of bullet points — and render, in order,
+    into the generated agenda PDF between "Purpose of Meeting" and "Open
+    Discussion"."""
+    __tablename__ = "agenda_sections"
+
+    id = db.Column(db.Integer, primary_key=True)
+    meeting_id = db.Column(db.Integer, db.ForeignKey("meetings.id"), nullable=False)
+    order_index = db.Column(db.Integer, nullable=False, default=0)
+    title = db.Column(db.String(200), nullable=False)
+    bullet_points = db.Column(db.JSON, nullable=False, default=list)
+
+    created_at = db.Column(db.DateTime, default=_utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "meeting_id": self.meeting_id,
+            "order_index": self.order_index,
+            "title": self.title,
+            "bullet_points": self.bullet_points or [],
+        }
 
 
 class Attendance(db.Model):
@@ -131,10 +210,11 @@ class Attendance(db.Model):
         nullable=False, default="absent"
     )
 
-    # How this record was set. QR self-scans can never overwrite an admin-set
-    # record; admins can always override either. See routes/qr_attendance.py.
+    # How this record was set. Self-marks via the attendance code can never
+    # overwrite an admin-set record; admins can always override either.
+    # See routes/attendance_code.py.
     marked_via = db.Column(
-        db.Enum("admin", "qr", "system", name="attendance_marked_via"),
+        db.Enum("admin", "code", "system", name="attendance_marked_via"),
         nullable=False, default="admin"
     )
 
@@ -152,78 +232,4 @@ class Attendance(db.Model):
             "marked_via": self.marked_via,
             "marked_by": self.marked_by,
             "marked_at": self.marked_at.isoformat() if self.marked_at else None,
-        }
-
-
-class QRSession(db.Model):
-    """A time-boxed QR code that students can scan to self-mark attendance
-    for one meeting. Only one session should be active per meeting at a
-    time; generating a new one deactivates the previous.
-    """
-    __tablename__ = "qr_sessions"
-
-    id = db.Column(db.Integer, primary_key=True)
-    meeting_id = db.Column(db.Integer, db.ForeignKey("meetings.id"), nullable=False)
-    token = db.Column(db.String(64), unique=True, nullable=False, index=True)
-
-    generated_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    expires_at = db.Column(db.DateTime, nullable=False)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-
-    created_at = db.Column(db.DateTime, default=_utcnow)
-
-    meeting = db.relationship("Meeting", foreign_keys=[meeting_id])
-
-    def is_valid(self, now=None):
-        now = now or _utcnow()
-        expires = self.expires_at if self.expires_at.tzinfo else self.expires_at.replace(tzinfo=timezone.utc)
-        return self.is_active and now <= expires
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "meeting_id": self.meeting_id,
-            "token": self.token,
-            "generated_by": self.generated_by,
-            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
-            "is_active": self.is_active,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-        }
-
-
-class QRScanLog(db.Model):
-    """Audit trail of every scan attempt (successful or not), used for
-    security review and simple per-student rate limiting.
-    """
-    __tablename__ = "qr_scan_logs"
-
-    id = db.Column(db.Integer, primary_key=True)
-    meeting_id = db.Column(db.Integer, db.ForeignKey("meetings.id"), nullable=True)
-    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
-    token_attempted = db.Column(db.String(64), nullable=True)
-
-    result = db.Column(
-        db.Enum(
-            "success", "duplicate", "expired", "invalid_token",
-            "outside_window", "locked", "rate_limited", "error",
-            name="qr_scan_result"
-        ),
-        nullable=False
-    )
-    detail = db.Column(db.String(255), nullable=True)
-    ip_address = db.Column(db.String(64), nullable=True)
-
-    created_at = db.Column(db.DateTime, default=_utcnow)
-
-    student = db.relationship("User", foreign_keys=[student_id])
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "meeting_id": self.meeting_id,
-            "student_id": self.student_id,
-            "student_name": self.student.name if self.student else None,
-            "result": self.result,
-            "detail": self.detail,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
         }

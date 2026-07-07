@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
@@ -128,7 +130,7 @@ def get_student_attendance(student_id):
     records = (
         Attendance.query.filter_by(student_id=student_id)
         .join(Meeting)
-        .order_by(Meeting.meeting_datetime.desc())
+        .order_by(Meeting.meeting_date.desc(), Meeting.start_time.desc())
         .all()
     )
     total = len(records)
@@ -143,3 +145,67 @@ def get_student_attendance(student_id):
             "attendance_percentage": percentage,
         },
     }), 200
+
+
+# ---------------------------------------------------------------------------
+# Attendance code self-marking (Feature 1 — replaces QR scanning)
+# ---------------------------------------------------------------------------
+
+@attendance_bp.route("/code/submit", methods=["POST"])
+@roles_required("student")
+def submit_attendance_code():
+    """A student enters the 6-digit code shown/announced by the admin.
+    Attendance is marked automatically for whichever meeting currently has
+    that code active. Duplicate/admin-set records are protected exactly
+    like the old QR flow: an admin-set record can never be overwritten by
+    a student's own code entry.
+    """
+    student_id = int(get_jwt_identity())
+    data = request.get_json(force=True) or {}
+    code = (data.get("code") or "").strip()
+
+    if not code or not code.isdigit() or len(code) != 6:
+        return jsonify({"error": "Enter the 6-digit attendance code"}), 400
+
+    student = User.query.get(student_id)
+    if not student or not student.is_active:
+        return jsonify({"error": "Your account is not active. Contact an admin."}), 403
+
+    meeting = Meeting.query.filter_by(attendance_code=code).first()
+    if not meeting:
+        return jsonify({"error": "Invalid attendance code"}), 404
+
+    if meeting.status == "cancelled":
+        return jsonify({"error": "This meeting has been cancelled"}), 409
+    if meeting.attendance_locked:
+        return jsonify({"error": "Attendance for this meeting has been finalized"}), 409
+    if not meeting.is_code_valid(datetime.now()):
+        return jsonify({"error": "This code is not currently active for any meeting"}), 400
+
+    existing = Attendance.query.filter_by(meeting_id=meeting.id, student_id=student_id).first()
+    if existing:
+        if existing.marked_via == "admin":
+            return jsonify({
+                "error": "Your attendance was already recorded by an admin and can't be changed here.",
+                "attendance": existing.to_dict(),
+            }), 409
+        # Already self-marked earlier in this same window — idempotent, not an error.
+        return jsonify({
+            "message": "You're already marked present for this meeting.",
+            "attendance": existing.to_dict(),
+        }), 200
+
+    record = Attendance(
+        meeting_id=meeting.id,
+        student_id=student_id,
+        status="present",
+        marked_via="code",
+        marked_by=student_id,
+    )
+    db.session.add(record)
+    db.session.commit()
+
+    return jsonify({
+        "message": f"Attendance marked for {meeting.title}",
+        "attendance": record.to_dict(),
+    }), 201

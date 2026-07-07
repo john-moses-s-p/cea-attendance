@@ -9,8 +9,8 @@ from routes.auth import auth_bp
 from routes.meetings import meetings_bp
 from routes.attendance import attendance_bp
 from routes.students import students_bp
-from routes.qr_attendance import qr_bp
 from routes.analytics import analytics_bp
+from routes.exports import exports_bp
 
 
 def create_app(config_class=Config):
@@ -24,14 +24,15 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
-    CORS(app, resources={r"/api/*": {"origins": app.config["FRONTEND_ORIGIN"]}}, supports_credentials=True)
+    CORS(app, resources={r"/api/*": {"origins": app.config["FRONTEND_ORIGIN"]}},
+         supports_credentials=True, expose_headers=["Content-Disposition"])
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(meetings_bp)
     app.register_blueprint(attendance_bp)
     app.register_blueprint(students_bp)
-    app.register_blueprint(qr_bp)
     app.register_blueprint(analytics_bp)
+    app.register_blueprint(exports_bp)
 
     @app.route("/api/health", methods=["GET"])
     def health():
