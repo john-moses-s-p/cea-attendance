@@ -60,7 +60,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-navy-card/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg md:hidden"
       aria-label="Primary"
     >
       <div className="mx-auto flex max-w-6xl">
@@ -73,11 +73,11 @@ export default function BottomNav() {
               className="tap-scale flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium"
             >
               <span className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
-                active ? 'bg-accent/20 text-accent shadow-glow-sm' : 'text-slate-400'
+                active ? 'bg-accent/20 text-accent shadow-glow-sm' : 'text-slate-500'
               }`}>
                 <Icon name={item.icon} />
               </span>
-              <span className={active ? 'text-accent' : 'text-slate-400'}>{item.label}</span>
+              <span className={active ? 'text-accent' : 'text-slate-500'}>{item.label}</span>
             </Link>
           )
         })}

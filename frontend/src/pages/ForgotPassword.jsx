@@ -18,18 +18,18 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 bg-glow-radial px-4 py-10">
       <PageTransition className="w-full max-w-sm">
         <Logos layout="center" size={48} />
         <div className="glass-card mt-6 rounded-3xl p-6 shadow-glow-sm sm:p-8">
-          <h2 className="font-display text-xl font-bold text-slate-100">Reset your password</h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <h2 className="font-display text-xl font-bold text-slate-900">Reset your password</h2>
+          <p className="mt-1 text-sm text-slate-500">
             Enter your institutional email and we'll send a reset link.
           </p>
 
           {sent ? (
             <div className="mt-6 space-y-4">
-              <p className="rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+              <p className="rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600">
                 If that account exists, a reset link has been sent.
               </p>
               {devToken && (
@@ -46,7 +46,7 @@ export default function ForgotPassword() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@student.tce.edu"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
               />
               <Button type="submit" className="w-full py-3.5 text-base">
                 Send reset link

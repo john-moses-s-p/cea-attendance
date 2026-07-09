@@ -26,12 +26,12 @@ export default function Profile() {
   ]
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-10">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">Account</p>
-          <h1 className="font-display text-2xl font-bold text-slate-100">Profile</h1>
+          <h1 className="font-display text-2xl font-bold text-slate-900">Profile</h1>
 
           <Card className="mt-6 flex flex-col items-center gap-4 text-center" glow>
             <div className="flex items-center gap-3">
@@ -39,7 +39,7 @@ export default function Profile() {
               <TceLogo size={56} />
             </div>
             <div>
-              <p className="text-lg font-semibold text-slate-100">{user.name}</p>
+              <p className="text-lg font-semibold text-slate-900">{user.name}</p>
               <p className="font-mono text-xs uppercase tracking-wide text-accent">{user.role.replace('_', ' ')}</p>
             </div>
           </Card>
@@ -48,15 +48,15 @@ export default function Profile() {
             <dl className="divide-y divide-white/5">
               {fields.map((f) => (
                 <div key={f.label} className="flex items-center justify-between py-3">
-                  <dt className="text-xs uppercase tracking-wide text-slate-400">{f.label}</dt>
-                  <dd className="text-sm font-medium text-slate-100">{f.value}</dd>
+                  <dt className="text-xs uppercase tracking-wide text-slate-500">{f.label}</dt>
+                  <dd className="text-sm font-medium text-slate-900">{f.value}</dd>
                 </div>
               ))}
             </dl>
           </Card>
 
           {isAdmin && (
-            <p className="mt-4 text-center text-xs text-slate-400">
+            <p className="mt-4 text-center text-xs text-slate-500">
               Signed in with elevated ({user.role.replace('_', ' ')}) access.
             </p>
           )}

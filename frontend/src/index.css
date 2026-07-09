@@ -4,29 +4,30 @@
 
 body {
   -webkit-font-smoothing: antialiased;
-  background-color: #0F172A;
-  color: #E2E8F0;
+  background-color: #F8FAFC; /* slate-50 */
+  color: #1E293B; /* slate-800 */
 }
 
-/* --- Glassmorphism primitives ------------------------------------------ */
+/* --- Glassmorphism primitives (light) ----------------------------------- */
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.6);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
 }
 
 .glass-card-solid {
-  background: #1E293B;
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .glow-btn {
   transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 .glow-btn:hover {
-  box-shadow: 0 0 22px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 18px rgba(14, 165, 233, 0.32);
 }
 .glow-btn:active {
   transform: scale(0.96);
@@ -40,9 +41,9 @@ body {
 }
 
 /* Legacy print/title-block styling — still used by generated-agenda-style
-   read-only displays; harmless to keep alongside the dark theme. */
+   read-only displays; harmless to keep alongside the light theme. */
 .title-block {
-  border: 1.5px solid rgba(56, 189, 248, 0.25);
+  border: 1.5px solid rgba(14, 165, 233, 0.25);
 }
 
 /* Visible keyboard focus ring everywhere */
@@ -51,7 +52,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #38BDF8;
+  outline: 2px solid #0EA5E9;
   outline-offset: 2px;
 }
 
@@ -64,7 +65,7 @@ textarea:focus-visible {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Custom scrollbar for dark theme (webkit) */
+/* Custom scrollbar for light theme (webkit) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -73,7 +74,7 @@ textarea:focus-visible {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.25);
+  background: rgba(14, 165, 233, 0.3);
   border-radius: 9999px;
 }
 

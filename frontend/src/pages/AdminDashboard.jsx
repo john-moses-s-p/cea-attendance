@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
           <Card className="flex items-center justify-between gap-3" glow>
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-accent">Overview</p>
-              <h1 className="font-display text-xl font-bold text-slate-100 sm:text-2xl">{user.name}</h1>
+              <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">{user.name}</h1>
             </div>
             <Logos layout="welcome" size={36} />
           </Card>
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
           </div>
 
           {loading ? (
-            <p className="mt-6 text-sm text-slate-400">Loading…</p>
+            <p className="mt-6 text-sm text-slate-500">Loading…</p>
           ) : (
             <>
               {/* Statistics cards (Requirement 9) */}
@@ -72,27 +72,27 @@ export default function AdminDashboard() {
                 {stats.map((s, i) => (
                   <Card key={s.label} className="text-center animate-fade-in-up" style={{ animationDelay: `${i * 40}ms` }}>
                     <p className="font-mono text-2xl font-bold text-accent sm:text-3xl">{s.value}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">{s.label}</p>
+                    <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-500">{s.label}</p>
                   </Card>
                 ))}
               </div>
 
               {/* Upcoming meetings card */}
               <Card className="mt-6">
-                <h2 className="mb-3 font-display text-lg font-bold text-slate-100">Upcoming meetings</h2>
+                <h2 className="mb-3 font-display text-lg font-bold text-slate-900">Upcoming meetings</h2>
                 {upcoming.length === 0 ? (
-                  <p className="text-sm text-slate-400">No meetings scheduled yet. Create one to get started.</p>
+                  <p className="text-sm text-slate-500">No meetings scheduled yet. Create one to get started.</p>
                 ) : (
                   <div className="space-y-2.5">
                     {upcoming.slice(0, 5).map((m) => (
                       <Link
                         key={m.id}
                         to={`/admin/meetings/${m.id}`}
-                        className="tap-scale flex flex-col gap-1 rounded-2xl border border-white/5 bg-white/5 px-4 py-3.5 hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between"
+                        className="tap-scale flex flex-col gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 hover:border-accent/40 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div>
-                          <p className="font-medium text-slate-100">{m.title}</p>
-                          <p className="text-xs text-slate-400">{m.venue || 'Venue TBD'}</p>
+                          <p className="font-medium text-slate-900">{m.title}</p>
+                          <p className="text-xs text-slate-500">{m.venue || 'Venue TBD'}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <p className="font-mono text-xs text-accent/80">{formatMeetingWhen(m)}</p>

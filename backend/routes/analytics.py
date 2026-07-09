@@ -21,11 +21,16 @@ def attendance_analytics():
       meetings_absent    = every other countable meeting (explicit 'absent'
                             records AND meetings with no record at all,
                             since an unmarked meeting is still a miss)
-      attendance_percentage = attended / (total non-cancelled meetings - excused)
+      attendance_percentage = attended / (total completed meetings - excused)
+
+    Only *completed* meetings count. A meeting that's merely scheduled
+    hasn't happened yet, so it must never count as an absence against
+    anyone — it simply isn't part of the denominator until an admin marks
+    it completed.
     """
-    # Meetings that actually happened / are happening — cancelled meetings
-    # don't count toward anyone's attendance.
-    countable_meetings = Meeting.query.filter(Meeting.status != "cancelled").all()
+    # Only meetings that have actually happened count toward attendance —
+    # scheduled (future/in-progress) and cancelled meetings are excluded.
+    countable_meetings = Meeting.query.filter(Meeting.status == "completed").all()
     total_meetings = len(countable_meetings)
     countable_ids = {m.id for m in countable_meetings}
 

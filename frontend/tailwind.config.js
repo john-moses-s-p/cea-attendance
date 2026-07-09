@@ -24,22 +24,25 @@ export default {
           excused: "#7C6FA8",
           upcoming: "#1D5A8C",
         },
-        // --- Active dark glassmorphism theme ---
+        // Kept for reference; the app no longer uses these as page
+        // backgrounds now that the UI is light-themed (see "accent" below,
+        // which is the theme's real color anchor).
         navy: {
           DEFAULT: "#0F172A",
           card: "#1E293B",
           light: "#334155",
         },
+        // --- Active light theme accent ---
         accent: {
-          DEFAULT: "#38BDF8",
-          dark: "#0EA5E9",
-          soft: "#7DD3FC",
+          DEFAULT: "#0EA5E9", // sky-500 — matches the TCE portal header blue
+          dark: "#0284C7",
+          soft: "#38BDF8",
         },
       },
       boxShadow: {
-        glow: "0 0 28px rgba(56, 189, 248, 0.35)",
-        "glow-sm": "0 0 14px rgba(56, 189, 248, 0.28)",
-        "glow-lg": "0 0 48px rgba(56, 189, 248, 0.45)",
+        glow: "0 0 24px rgba(14, 165, 233, 0.35)",
+        "glow-sm": "0 4px 16px rgba(14, 165, 233, 0.18)",
+        "glow-lg": "0 0 40px rgba(14, 165, 233, 0.4)",
       },
       fontFamily: {
         display: ["Space Grotesk", "sans-serif"],
@@ -50,7 +53,7 @@ export default {
         "blueprint-grid":
           "linear-gradient(rgba(91,155,199,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(91,155,199,0.15) 1px, transparent 1px)",
         "glow-radial":
-          "radial-gradient(circle at 50% 0%, rgba(56,189,248,0.18), transparent 60%)",
+          "radial-gradient(circle at 50% 0%, rgba(14,165,233,0.10), transparent 60%)",
       },
       backgroundSize: {
         grid: "24px 24px",
@@ -65,10 +68,16 @@ export default {
           "50%": { transform: "scale(0.96)" },
           "100%": { transform: "scale(1)" },
         },
+        "splash-slide": {
+          "0%": { transform: "translateX(-100%)" },
+          "50%": { transform: "translateX(60%)" },
+          "100%": { transform: "translateX(220%)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 0.35s ease-out both",
         "pop": "pop 0.22s ease-in-out",
+        "splash-slide": "splash-slide 1.1s ease-in-out infinite",
       },
     },
   },

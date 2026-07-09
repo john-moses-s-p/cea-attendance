@@ -37,7 +37,7 @@ export default function StudentDashboard() {
   }, [user.id])
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
@@ -45,13 +45,13 @@ export default function StudentDashboard() {
           <Card className="flex items-center justify-between" glow>
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-accent">Welcome back</p>
-              <h1 className="font-display text-xl font-bold text-slate-100 sm:text-2xl">{user.name}</h1>
+              <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">{user.name}</h1>
             </div>
             <Logos layout="welcome" size={36} />
           </Card>
 
           {loading ? (
-            <p className="mt-6 text-sm text-slate-400">Loading…</p>
+            <p className="mt-6 text-sm text-slate-500">Loading…</p>
           ) : (
             <>
               {/* Statistics cards (Requirement 9) */}
@@ -60,36 +60,36 @@ export default function StudentDashboard() {
                   <p className="font-mono text-2xl font-bold text-accent sm:text-3xl">
                     {summary?.attendance_percentage ?? '—'}{summary?.attendance_percentage != null && '%'}
                   </p>
-                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">Attendance</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-500">Attendance</p>
                 </Card>
                 <Card className="text-center animate-fade-in-up" style={{ animationDelay: '40ms' }}>
-                  <p className="font-mono text-2xl font-bold text-emerald-300 sm:text-3xl">{summary?.present_or_late ?? 0}</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">Attended</p>
+                  <p className="font-mono text-2xl font-bold text-emerald-600 sm:text-3xl">{summary?.present_or_late ?? 0}</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-500">Attended</p>
                 </Card>
                 <Card className="text-center animate-fade-in-up" style={{ animationDelay: '80ms' }}>
-                  <p className="font-mono text-2xl font-bold text-rose-300 sm:text-3xl">
+                  <p className="font-mono text-2xl font-bold text-rose-600 sm:text-3xl">
                     {(summary?.total_meetings ?? 0) - (summary?.present_or_late ?? 0)}
                   </p>
-                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-400">Missed</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-wide text-slate-500">Missed</p>
                 </Card>
               </div>
 
               <div className="mt-6 grid gap-6 md:grid-cols-2">
                 {/* Upcoming meetings card */}
                 <Card>
-                  <h2 className="mb-3 font-display text-lg font-bold text-slate-100">Upcoming meetings</h2>
+                  <h2 className="mb-3 font-display text-lg font-bold text-slate-900">Upcoming meetings</h2>
                   {upcoming.length === 0 ? (
-                    <p className="text-sm text-slate-400">Nothing scheduled right now.</p>
+                    <p className="text-sm text-slate-500">Nothing scheduled right now.</p>
                   ) : (
                     <div className="space-y-2.5">
                       {upcoming.map((m) => (
                         <Link
                           key={m.id}
                           to={`/student/meetings/${m.id}`}
-                          className="tap-scale flex items-start justify-between gap-2 rounded-2xl border border-white/5 bg-white/5 px-4 py-3.5 hover:border-accent/40"
+                          className="tap-scale flex items-start justify-between gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 hover:border-accent/40"
                         >
                           <div>
-                            <p className="font-medium text-slate-100">{m.title}</p>
+                            <p className="font-medium text-slate-900">{m.title}</p>
                             <p className="mt-0.5 font-mono text-xs text-accent/80">{formatMeetingWhen(m)}</p>
                           </div>
                           <MeetingStatusBadge status={m.status} />
@@ -101,14 +101,14 @@ export default function StudentDashboard() {
 
                 {/* Attendance summary card */}
                 <Card>
-                  <h2 className="mb-3 font-display text-lg font-bold text-slate-100">Recent attendance</h2>
+                  <h2 className="mb-3 font-display text-lg font-bold text-slate-900">Recent attendance</h2>
                   {records.length === 0 ? (
-                    <p className="text-sm text-slate-400">No attendance recorded yet.</p>
+                    <p className="text-sm text-slate-500">No attendance recorded yet.</p>
                   ) : (
                     <div className="space-y-2.5">
                       {records.map((r) => (
-                        <div key={r.id} className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/5 px-4 py-3.5">
-                          <p className="text-sm text-slate-100">Meeting #{r.meeting_id}</p>
+                        <div key={r.id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5">
+                          <p className="text-sm text-slate-900">Meeting #{r.meeting_id}</p>
                           <AttendanceStatusBadge status={r.status} />
                         </div>
                       ))}

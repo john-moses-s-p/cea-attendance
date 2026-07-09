@@ -6,8 +6,8 @@ import { Button } from '../components/ui/primitives'
 import PageTransition from '../components/ui/PageTransition'
 
 const inputClass =
-  'w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none'
-const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-400'
+  'w-full rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none'
+const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-500'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -31,11 +31,11 @@ export default function Register() {
 
   if (status.devToken) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 bg-glow-radial px-4 py-10">
         <PageTransition className="glass-card w-full max-w-sm rounded-3xl p-8 text-center shadow-glow-sm">
-          <h2 className="font-display text-xl font-bold text-slate-100">Check your email</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            We've sent a verification link to <strong className="text-slate-200">{form.email}</strong>. Verify your
+          <h2 className="font-display text-xl font-bold text-slate-900">Check your email</h2>
+          <p className="mt-2 text-sm text-slate-500">
+            We've sent a verification link to <strong className="text-slate-800">{form.email}</strong>. Verify your
             account, then sign in.
           </p>
           <Button onClick={() => navigate(`/verify-email?token=${status.devToken}`)} className="mt-5 w-full">
@@ -47,12 +47,12 @@ export default function Register() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 bg-glow-radial px-4 py-10">
       <PageTransition className="w-full max-w-sm">
         <Logos layout="center" size={48} />
         <div className="glass-card mt-6 rounded-3xl p-6 shadow-glow-sm sm:p-8">
-          <h2 className="font-display text-xl font-bold text-slate-100">Create your account</h2>
-          <p className="mt-1 text-sm text-slate-400">Students only — use your institutional email.</p>
+          <h2 className="font-display text-xl font-bold text-slate-900">Create your account</h2>
+          <p className="mt-1 text-sm text-slate-500">Students only — use your institutional email.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
@@ -78,7 +78,7 @@ export default function Register() {
             </div>
 
             {status.error && (
-              <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{status.error}</p>
+              <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-600">{status.error}</p>
             )}
 
             <Button type="submit" disabled={status.loading} className="w-full py-3.5 text-base">

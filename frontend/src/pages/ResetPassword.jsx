@@ -26,14 +26,14 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 bg-glow-radial px-4 py-10">
       <PageTransition className="w-full max-w-sm">
         <Logos layout="center" size={48} />
         <div className="glass-card mt-6 rounded-3xl p-6 shadow-glow-sm sm:p-8">
-          <h2 className="font-display text-xl font-bold text-slate-100">Set a new password</h2>
+          <h2 className="font-display text-xl font-bold text-slate-900">Set a new password</h2>
 
           {success ? (
-            <p className="mt-4 rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+            <p className="mt-4 rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-600">
               Password reset. Redirecting to sign in…
             </p>
           ) : (
@@ -45,10 +45,10 @@ export default function ResetPassword() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="New password"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
               />
               {error && (
-                <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</p>
+                <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-600">{error}</p>
               )}
               <Button type="submit" className="w-full py-3.5 text-base">
                 Reset password

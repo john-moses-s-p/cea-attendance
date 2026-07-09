@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import Splash from './components/Splash'
 
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -17,6 +19,22 @@ import Profile from './pages/Profile'
 
 export default function App() {
   const { user } = useAuth()
+
+  // Opening screen (Requirement: match the provided splash reference).
+  // Shown once per browser tab, on first load only — not on every route
+  // change or refresh-triggered remount within the same tab session.
+  const [showSplash, setShowSplash] = useState(() => !sessionStorage.getItem('cea_splash_shown'))
+
+  useEffect(() => {
+    if (!showSplash) return
+    const timer = setTimeout(() => {
+      sessionStorage.setItem('cea_splash_shown', '1')
+      setShowSplash(false)
+    }, 1100)
+    return () => clearTimeout(timer)
+  }, [showSplash])
+
+  if (showSplash) return <Splash />
 
   return (
     <Routes>

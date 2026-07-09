@@ -10,10 +10,10 @@ import { useAuth } from '../context/AuthContext'
 const STATUSES = ['present', 'absent', 'late', 'excused']
 
 const STATUS_BTN_ACTIVE = {
-  present: 'bg-emerald-400 text-navy shadow-glow-sm',
-  absent: 'bg-rose-400 text-navy',
-  late: 'bg-amber-400 text-navy',
-  excused: 'bg-violet-400 text-navy',
+  present: 'bg-emerald-400 text-white shadow-glow-sm',
+  absent: 'bg-rose-400 text-white',
+  late: 'bg-amber-400 text-white',
+  excused: 'bg-violet-400 text-white',
 }
 
 async function downloadFile(url, fallbackName) {
@@ -71,13 +71,13 @@ function AttendanceCodePanel({ meetingId, locked }) {
   }
 
   if (locked) {
-    return <p className="text-sm text-slate-400">Attendance is locked for this meeting — the code is no longer active.</p>
+    return <p className="text-sm text-slate-500">Attendance is locked for this meeting — the code is no longer active.</p>
   }
-  if (loading) return <p className="text-sm text-slate-400">Loading attendance code…</p>
+  if (loading) return <p className="text-sm text-slate-500">Loading attendance code…</p>
 
   return (
     <div>
-      {error && <p className="mb-3 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</p>}
+      {error && <p className="mb-3 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-600">{error}</p>}
 
       {!info?.attendance_code ? (
         <Button onClick={handleGenerate} disabled={generating} className="w-full sm:w-auto">
@@ -91,7 +91,7 @@ function AttendanceCodePanel({ meetingId, locked }) {
               {info.attendance_code}
             </p>
             <span className={`mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-              info.code_valid ? 'bg-emerald-400/20 text-emerald-300' : 'bg-rose-400/20 text-rose-300'
+              info.code_valid ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
             }`}>
               {info.code_valid ? '● Active — students can enter this now' : '○ Not currently active'}
             </span>
@@ -143,16 +143,16 @@ function CodeEntryPanel({ onMarked }) {
         value={code}
         onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
         placeholder="483921"
-        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center font-mono text-2xl tracking-[0.3em] text-slate-100 placeholder:text-slate-600 focus:border-accent focus:outline-none"
+        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-4 text-center font-mono text-2xl tracking-[0.3em] text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
       />
       <Button type="submit" disabled={submitting} className="w-full py-3.5 text-base">
         {submitting ? 'Submitting…' : 'Mark my attendance'}
       </Button>
       {result && (
         <p className={`rounded-2xl px-4 py-3 text-sm ${
-          result.type === 'success' ? 'bg-emerald-500/10 text-emerald-300'
+          result.type === 'success' ? 'bg-emerald-50 text-emerald-700'
           : result.type === 'info' ? 'bg-accent/10 text-accent'
-          : 'bg-rose-500/10 text-rose-300'
+          : 'bg-rose-50 text-rose-700'
         }`}>
           {result.message}
         </p>
@@ -247,10 +247,10 @@ export default function MeetingDetail() {
 
   if (loading || !meeting) {
     return (
-      <div className="min-h-screen bg-navy bg-glow-radial">
+      <div className="min-h-screen bg-slate-50 bg-glow-radial">
         <Navbar />
         <main className="mx-auto max-w-4xl px-6 py-8">
-          <p className="text-sm text-slate-400">Loading…</p>
+          <p className="text-sm text-slate-500">Loading…</p>
         </main>
       </div>
     )
@@ -262,7 +262,7 @@ export default function MeetingDetail() {
     : '—'
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
@@ -276,8 +276,8 @@ export default function MeetingDetail() {
                 <p className="font-mono text-xs uppercase tracking-widest text-accent">
                   {meeting.status} {meeting.attendance_locked && '· attendance locked'}
                 </p>
-                <h1 className="mt-1 font-display text-xl font-bold text-slate-100 sm:text-2xl">{meeting.title}</h1>
-                <p className="mt-1 font-mono text-sm text-slate-400">
+                <h1 className="mt-1 font-display text-xl font-bold text-slate-900 sm:text-2xl">{meeting.title}</h1>
+                <p className="mt-1 font-mono text-sm text-slate-500">
                   {dateLabel} · {meeting.start_time}–{meeting.end_time} · {meeting.venue || 'Venue TBD'}
                 </p>
               </div>
@@ -286,16 +286,16 @@ export default function MeetingDetail() {
               )}
             </div>
 
-            {meeting.description && <p className="mt-4 text-sm text-slate-300">{meeting.description}</p>}
+            {meeting.description && <p className="mt-4 text-sm text-slate-600">{meeting.description}</p>}
 
             {meeting.agenda_sections?.length > 0 && (
-              <div className="mt-4 space-y-3 border-t border-white/5 pt-4">
+              <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
                 <p className="text-xs font-mono uppercase tracking-wide text-accent">Agenda</p>
                 {meeting.agenda_sections.map((s) => (
                   <div key={s.id}>
-                    <p className="text-sm font-semibold italic text-slate-100">{s.title}</p>
+                    <p className="text-sm font-semibold italic text-slate-900">{s.title}</p>
                     {s.bullet_points?.length > 0 && (
-                      <ul className="ml-4 list-disc text-sm text-slate-400">
+                      <ul className="ml-4 list-disc text-sm text-slate-500">
                         {s.bullet_points.map((b, i) => <li key={i}>{b}</li>)}
                       </ul>
                     )}
@@ -305,9 +305,9 @@ export default function MeetingDetail() {
             )}
 
             {isAdmin && (
-              <div className="mt-5 border-t border-white/5 pt-4">
+              <div className="mt-5 border-t border-slate-200 pt-4">
                 <p className="mb-2 text-xs font-mono uppercase tracking-wide text-accent">Export</p>
-                {exportError && <p className="mb-2 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{exportError}</p>}
+                {exportError && <p className="mb-2 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-600">{exportError}</p>}
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                   <Button onClick={() => handleExport('agenda')} disabled={exporting === 'agenda'} variant="outline">
                     {exporting === 'agenda' ? 'Generating…' : 'Agenda PDF'}
@@ -325,15 +325,15 @@ export default function MeetingDetail() {
 
           {isAdmin && meeting.status === 'scheduled' && (
             <Card className="mt-4">
-              <h2 className="mb-4 font-display text-lg font-bold text-slate-100">Attendance code</h2>
+              <h2 className="mb-4 font-display text-lg font-bold text-slate-900">Attendance code</h2>
               <AttendanceCodePanel meetingId={meeting.id} locked={meeting.attendance_locked} />
             </Card>
           )}
 
           {!isAdmin && meeting.status === 'scheduled' && !meeting.attendance_locked && (
             <Card className="mt-4">
-              <h2 className="mb-1 font-display text-lg font-bold text-slate-100">Mark your attendance</h2>
-              <p className="mb-4 text-sm text-slate-400">
+              <h2 className="mb-1 font-display text-lg font-bold text-slate-900">Mark your attendance</h2>
+              <p className="mb-4 text-sm text-slate-500">
                 Enter the 6-digit code your admin shares during the meeting.
               </p>
               <CodeEntryPanel onMarked={load} />
@@ -342,7 +342,7 @@ export default function MeetingDetail() {
 
           <Card className="mt-4">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="font-display text-lg font-bold text-slate-100">Attendance</h2>
+              <h2 className="font-display text-lg font-bold text-slate-900">Attendance</h2>
               {isAdmin && !meeting.attendance_locked && (
                 <div className="flex gap-2">
                   <Button onClick={markAllPresent} disabled={saving} variant="outline" className="px-3 py-2 text-xs">
@@ -357,17 +357,17 @@ export default function MeetingDetail() {
 
             {isAdmin ? (
               students.length === 0 ? (
-                <p className="text-sm text-slate-400">No active students found. Add students first.</p>
+                <p className="text-sm text-slate-500">No active students found. Add students first.</p>
               ) : (
                 <div className="space-y-2">
                   {students.map((s) => {
                     const current = statusFor(s.id)
                     return (
-                      <div key={s.id} className="rounded-2xl border border-white/5 bg-white/5 p-3">
+                      <div key={s.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                           <div>
-                            <p className="text-sm font-medium text-slate-100">{s.name}</p>
-                            <p className="font-mono text-xs text-slate-500">{s.register_number || s.email}</p>
+                            <p className="text-sm font-medium text-slate-900">{s.name}</p>
+                            <p className="font-mono text-xs text-slate-400">{s.register_number || s.email}</p>
                           </div>
                           <div className="flex flex-wrap gap-1.5">
                             {STATUSES.map((status) => (
@@ -376,7 +376,7 @@ export default function MeetingDetail() {
                                 disabled={meeting.attendance_locked}
                                 onClick={() => setStatus(s.id, status)}
                                 className={`tap-scale rounded-full px-3 py-1.5 text-xs font-medium capitalize transition-colors disabled:opacity-50 ${
-                                  current === status ? STATUS_BTN_ACTIVE[status] : 'bg-white/5 text-slate-400 hover:bg-white/10'
+                                  current === status ? STATUS_BTN_ACTIVE[status] : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                                 }`}
                               >
                                 {status}
@@ -392,7 +392,7 @@ export default function MeetingDetail() {
             ) : (
               <div>
                 {attendance.length === 0 ? (
-                  <p className="text-sm text-slate-400">Attendance has not been marked for this meeting yet.</p>
+                  <p className="text-sm text-slate-500">Attendance has not been marked for this meeting yet.</p>
                 ) : (
                   <AttendanceStatusBadge status={attendance[0].status} />
                 )}

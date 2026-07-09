@@ -22,15 +22,15 @@ export default function VerifyEmail() {
   }, [searchParams])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy bg-glow-radial px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 bg-glow-radial px-4 py-10">
       <PageTransition className="w-full max-w-sm">
         <Logos layout="center" size={48} />
         <div className="glass-card mt-6 rounded-3xl p-8 text-center shadow-glow-sm">
-          {status === 'verifying' && <p className="text-sm text-slate-400">Verifying your email…</p>}
+          {status === 'verifying' && <p className="text-sm text-slate-500">Verifying your email…</p>}
           {status === 'success' && (
             <>
-              <h2 className="font-display text-xl font-bold text-slate-100">Email verified</h2>
-              <p className="mt-2 text-sm text-slate-400">You can now sign in to your account.</p>
+              <h2 className="font-display text-xl font-bold text-slate-900">Email verified</h2>
+              <p className="mt-2 text-sm text-slate-500">You can now sign in to your account.</p>
               <Button as={Link} to="/login" className="mt-5 w-full">
                 Go to sign in
               </Button>
@@ -39,7 +39,7 @@ export default function VerifyEmail() {
           {status === 'error' && (
             <>
               <h2 className="font-display text-xl font-bold text-rose-400">Verification failed</h2>
-              <p className="mt-2 text-sm text-slate-400">This link is invalid or has expired.</p>
+              <p className="mt-2 text-sm text-slate-500">This link is invalid or has expired.</p>
             </>
           )}
         </div>

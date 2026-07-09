@@ -8,8 +8,8 @@ import { Card, Button, MeetingStatusBadge } from '../components/ui/primitives'
 import { useAuth } from '../context/AuthContext'
 
 const inputClass =
-  'w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 text-base text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none'
-const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-400'
+  'w-full rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none'
+const labelClass = 'mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-500'
 
 const EMPTY_FORM = {
   title: '',
@@ -49,22 +49,22 @@ function AgendaSectionBuilder({ sections, setSections }) {
       </div>
 
       {sections.length === 0 ? (
-        <p className="text-xs text-slate-500">No sections added yet.</p>
+        <p className="text-xs text-slate-400">No sections added yet.</p>
       ) : (
         <div className="space-y-3">
           {sections.map((s, i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-3">
+            <div key={i} className="rounded-2xl border border-slate-300 bg-white p-3">
               <div className="mb-2 flex items-center gap-2">
                 <input
                   value={s.title}
                   onChange={(e) => updateSection(i, 'title', e.target.value)}
                   placeholder="Section title (e.g. Venue Arrangement)"
-                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+                  className="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => removeSection(i)}
-                  className="glow-btn rounded-xl border border-rose-400/40 px-2.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-400/10"
+                  className="glow-btn rounded-xl border border-rose-300 px-2.5 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50"
                 >
                   Remove
                 </button>
@@ -74,7 +74,7 @@ function AgendaSectionBuilder({ sections, setSections }) {
                 value={s.bulletsText}
                 onChange={(e) => updateSection(i, 'bulletsText', e.target.value)}
                 placeholder={'One bullet point per line, e.g.\nBooking of venue\nSeating arrangement'}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
               />
             </div>
           ))}
@@ -129,14 +129,14 @@ export default function Meetings() {
   }
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-accent">Register</p>
-              <h1 className="font-display text-2xl font-bold text-slate-100">Meetings</h1>
+              <h1 className="font-display text-2xl font-bold text-slate-900">Meetings</h1>
             </div>
             {isAdmin && (
               <Button onClick={() => setShowForm((v) => !v)} variant={showForm ? 'outline' : 'primary'}>
@@ -181,7 +181,7 @@ export default function Meetings() {
                   setSections={(sections) => setForm({ ...form, agenda_sections: sections })}
                 />
 
-                {formError && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{formError}</p>}
+                {formError && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-600">{formError}</p>}
 
                 <Button type="submit" disabled={submitting} className="w-full py-3.5 text-base">
                   {submitting ? 'Creating…' : 'Create meeting'}
@@ -191,9 +191,9 @@ export default function Meetings() {
           )}
 
           {loading ? (
-            <p className="text-sm text-slate-400">Loading…</p>
+            <p className="text-sm text-slate-500">Loading…</p>
           ) : meetings.length === 0 ? (
-            <p className="text-sm text-slate-400">No meetings yet.</p>
+            <p className="text-sm text-slate-500">No meetings yet.</p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {meetings.map((m, i) => (
@@ -205,11 +205,11 @@ export default function Meetings() {
                 >
                   <Card className="h-full hover:border-accent/40 hover:shadow-glow-sm">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-medium text-slate-100">{m.title}</p>
+                      <p className="font-medium text-slate-900">{m.title}</p>
                       <MeetingStatusBadge status={m.status} />
                     </div>
                     <p className="mt-2 font-mono text-xs text-accent/80">{formatMeetingWhen(m)}</p>
-                    <p className="mt-1 text-xs text-slate-400">{m.venue || 'Venue TBD'}</p>
+                    <p className="mt-1 text-xs text-slate-500">{m.venue || 'Venue TBD'}</p>
                   </Card>
                 </Link>
               ))}

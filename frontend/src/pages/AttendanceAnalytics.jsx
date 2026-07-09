@@ -14,10 +14,10 @@ const SORT_OPTIONS = [
 ]
 
 function percentTone(pct) {
-  if (pct === null || pct === undefined) return 'text-slate-500'
-  if (pct >= 75) return 'text-emerald-300'
-  if (pct >= 50) return 'text-amber-300'
-  return 'text-rose-300'
+  if (pct === null || pct === undefined) return 'text-slate-400'
+  if (pct >= 75) return 'text-emerald-600'
+  if (pct >= 50) return 'text-amber-600'
+  return 'text-rose-600'
 }
 
 export default function AttendanceAnalytics() {
@@ -93,16 +93,16 @@ export default function AttendanceAnalytics() {
   }
 
   return (
-    <div className="min-h-screen bg-navy bg-glow-radial pb-24 md:pb-0">
+    <div className="min-h-screen bg-slate-50 bg-glow-radial pb-24 md:pb-0">
       <Navbar />
       <PageTransition>
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-accent">Analytics</p>
-              <h1 className="font-display text-2xl font-bold text-slate-100">Attendance analytics</h1>
-              <p className="mt-1 text-xs text-slate-400">
-                Based on {totalMeetings} non-cancelled meeting{totalMeetings === 1 ? '' : 's'} on record.
+              <h1 className="font-display text-2xl font-bold text-slate-900">Attendance analytics</h1>
+              <p className="mt-1 text-xs text-slate-500">
+                Based on {totalMeetings} completed meeting{totalMeetings === 1 ? '' : 's'} — scheduled meetings don't count until they're marked completed.
               </p>
             </div>
             <Button onClick={handleExport} disabled={loading || filteredSorted.length === 0}>
@@ -116,21 +116,21 @@ export default function AttendanceAnalytics() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search name, email, register no., department…"
-              className="w-full flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
+              className="w-full flex-1 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:outline-none"
             />
             <div className="flex gap-2">
               <select
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value)}
-                className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-slate-100 focus:border-accent focus:outline-none"
+                className="rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 focus:border-accent focus:outline-none"
               >
                 {SORT_OPTIONS.map((opt) => (
-                  <option key={opt.key} value={opt.key} className="bg-navy-card">{opt.label}</option>
+                  <option key={opt.key} value={opt.key} className="bg-white">{opt.label}</option>
                 ))}
               </select>
               <button
                 onClick={() => setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))}
-                className="glow-btn rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-slate-100"
+                className="glow-btn rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900"
                 title="Toggle sort direction"
               >
                 {sortDir === 'asc' ? '↑' : '↓'}
@@ -139,47 +139,47 @@ export default function AttendanceAnalytics() {
           </Card>
 
           {error && (
-            <p className="mb-4 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+            <p className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
               {error}
             </p>
           )}
 
           {loading ? (
-            <p className="text-sm text-slate-400">Loading…</p>
+            <p className="text-sm text-slate-500">Loading…</p>
           ) : filteredSorted.length === 0 ? (
-            <p className="text-sm text-slate-400">No students match your search.</p>
+            <p className="text-sm text-slate-500">No students match your search.</p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {filteredSorted.map((r, i) => (
                 <Card key={r.student_id} className="animate-fade-in-up" style={{ animationDelay: `${Math.min(i, 10) * 25}ms` }}>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-slate-100">{r.name}</p>
-                      <p className="truncate text-xs text-slate-400">{r.email}</p>
+                      <p className="truncate font-medium text-slate-900">{r.name}</p>
+                      <p className="truncate text-xs text-slate-500">{r.email}</p>
                     </div>
                     <p className={`shrink-0 font-mono text-lg font-bold ${percentTone(r.attendance_percentage)}`}>
                       {r.attendance_percentage === null ? '—' : `${r.attendance_percentage}%`}
                     </p>
                   </div>
 
-                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400">
                     <span>{r.register_number || 'No reg. no.'}</span>
                     <span>·</span>
                     <span>{r.department || 'No department'}</span>
                   </div>
 
-                  <div className="mt-3 grid grid-cols-3 gap-2 border-t border-white/5 pt-3 text-center">
+                  <div className="mt-3 grid grid-cols-3 gap-2 border-t border-slate-200 pt-3 text-center">
                     <div>
-                      <p className="font-mono text-sm font-semibold text-emerald-300">{r.meetings_attended}</p>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500">Attended</p>
+                      <p className="font-mono text-sm font-semibold text-emerald-600">{r.meetings_attended}</p>
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">Attended</p>
                     </div>
                     <div>
-                      <p className="font-mono text-sm font-semibold text-rose-300">{r.meetings_absent}</p>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500">Absent</p>
+                      <p className="font-mono text-sm font-semibold text-rose-600">{r.meetings_absent}</p>
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">Absent</p>
                     </div>
                     <div>
-                      <p className="font-mono text-sm font-semibold text-violet-300">{r.meetings_excused}</p>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500">Excused</p>
+                      <p className="font-mono text-sm font-semibold text-violet-600">{r.meetings_excused}</p>
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400">Excused</p>
                     </div>
                   </div>
                 </Card>
